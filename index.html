@@ -22,8 +22,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font:calc(18px * var(--z))/1
 .hero{background:var(--wine);color:#fff;padding:1.2em max(5vw,16px) 1.2em}
 .hero h1{font-size:1.5em;line-height:1.2;margin:0 0 .2em;font-weight:900;text-wrap:balance}
 .hero p{margin:0;opacity:.85;font-size:.85em}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5em;margin-top:.9em;max-width:40em}
-.stat{background:var(--wine2);border-radius:.6em;padding:.5em .75em}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4em;margin-top:.9em;max-width:40em}
+.stat{background:var(--wine2);border-radius:.6em;padding:.5em .6em}
 .stat b{display:block;font-size:1.25em;font-weight:900;line-height:1.2;white-space:nowrap}
 .stat span{font-size:.8em;opacity:.85}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:.5em max(5vw,16px)}
@@ -162,6 +162,7 @@ const sales=W.filter(w=>w.on);
 const best=sales.slice().sort((a,b)=>b.pct-a.pct)[0];
 const soon=sales.filter(w=>w.left<=1).length;
 $("stats").innerHTML=[
+  [W.length+"종","전체 와인"],
   [sales.length+"종","지금 할인 중"],
   [best?best.pct+"%":"-","최대 할인율"],
   [soon+"종","내일까지 종료"]
