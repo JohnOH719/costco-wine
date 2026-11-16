@@ -69,6 +69,7 @@ main{padding:1.2em max(5vw,16px) 6em;max-width:calc(1240px + 10vw);margin:0 auto
 .per{font-size:.8125em;color:var(--mute)}
 .lk{display:inline-flex;align-items:center;justify-content:center;min-height:2.4em;margin-top:.3em;padding:0 .9em;border-radius:.5em;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:.875em;font-weight:500;align-self:flex-start}
 .lk:hover{border-color:var(--wine2)}
+.lk.ifno{display:none}.noph .lk.ifno{display:inline-flex}
 /* 사진 크기 시안: ?l=a / ?l=b / ?l=c */
 html[data-l=a] .pic{width:6.6em;height:9.6em}
 html[data-l=a] .bt{width:3em;height:8em}
@@ -178,8 +179,9 @@ const dd=w=>w.left===0?"오늘 종료":w.left===1?"내일 종료":`D-${w.left}`;
 let cart={};try{cart=JSON.parse(localStorage.getItem("wineCart")||"{}")||{}}catch(e){cart={}}
 const saveCart=()=>{try{localStorage.setItem("wineCart",JSON.stringify(cart))}catch(e){}};
 const byFull={};W.forEach(w=>byFull[w.full]=w);
-const pic=(t,ph,x="")=>`<div class="pic"><svg class="bt" viewBox="0 0 30 80" aria-hidden="true"><use href="#b-${t}"/></svg>${ph?`<img class="ph" src="${ph}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}${x}</div>`;
+const pic=(t,ph,x="")=>`<div class="pic"><svg class="bt" viewBox="0 0 30 80" aria-hidden="true"><use href="#b-${t}"/></svg>${ph?`<img class="ph" src="${ph}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('article').classList.add('noph');this.remove()">`:""}${x}</div>`;
 const key=k=>encodeURIComponent(k);
+const lk=(n,ph)=>`<a class="lk${ph?" ifno":""}" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent("코스트코 "+n+" 와인")}" target="_blank" rel="noopener">사진 보기 ↗</a>`;
 const CART=`<svg viewBox="0 0 24 24" width="1.25em" height="1.25em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h2.3l2.5 11.6a1.2 1.2 0 0 0 1.2.9h8.6a1.2 1.2 0 0 0 1.2-.9L20.5 7.5H6"/><circle cx="9.3" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg>`;
 const SORT={pct:(a,b)=>b.pct-a.pct||a.price-b.price,end:(a,b)=>(a.on?a.left:999)-(b.on?b.left:999)||b.pct-a.pct,low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price};
 function card(w){
@@ -191,6 +193,7 @@ function card(w){
       <div class="p"><b>${won(w.price)}</b>${w.on?`<s>${won(w.reg)}</s>`:""}</div>
       ${w.on?`<div class="off">−${won(w.reg-w.sale)} (${w.pct}%) · ~${w.en.slice(5).replace("-","/")}까지</div>`:""}
       ${w.vol!=="750ML"?`<div class="per">750ML 환산 ${won(w.per)}</div>`:""}
+      ${lk(w.n,w.ph)}
     </div>
   </article>`;
 }
@@ -214,6 +217,7 @@ function cartItem(k){
       <div class="p"><b>${won(price)}</b>${w&&w.on?`<s>${won(w.reg)}</s>`:""}</div>
       ${w&&w.on?`<div class="off">−${won(w.reg-w.sale)} (${w.pct}%) · ~${w.en.slice(5).replace("-","/")}까지 · ${dd(w)}</div>`:""}
       ${note?`<div class="was">${note}</div>`:""}
+      ${lk(n,ph)}
       <div class="cb"><button class="bo" data-k="${key(k)}" aria-pressed="${!!c.b}">${c.b?"샀어요 ✓":"샀어요"}</button><button class="rm" data-k="${key(k)}">빼기</button></div>
     </div>
   </article>`};
