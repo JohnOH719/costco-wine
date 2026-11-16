@@ -18,6 +18,13 @@ index.html은 화면이고, 와인 데이터는 wines.js에만 있습니다. 업
 - 처음 보는 와인은 이름으로 종류를 판단해 추가합니다. 같은 와인이 두 번 들어가지 않게 이름을 확인합니다.
 - window.UPDATED를 오늘 날짜(한국 시간)로 바꿉니다.
 
+## 2-1. 새 와인 사진 넣기
+
+- window.IMG에 없는 와인이 새로 들어오면, 코코홀릭 태그 페이지에서 그 와인의 상품 페이지(https://www.cocoholic.com/products/번호)를 찾아 주 사진 주소를 확인합니다.
+- 주소는 https://img.cocoholic.com/products/파일이름.webp?w=640&q=75 형태로 맞춰 window.IMG에 "와인 이름(용량 포함)": "주소"로 추가합니다. 이름은 WINES의 이름과 똑같아야 합니다.
+- 사진을 못 찾으면 넣지 않습니다. 화면에서 종류별 병 그림이 대신 나옵니다.
+- 코코홀릭 페이지는 한 번에 여러 개를 열면 막히니, 몇 개씩 나눠서 엽니다.
+
 ## 3. 확인하고 올리기
 
 - 문법 확인: node -e "global.window={};require('./wines.js');console.log(window.WINES.length)" 가 오류 없이 숫자를 출력해야 합니다.

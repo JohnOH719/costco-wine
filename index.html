@@ -46,7 +46,9 @@ main{padding:1.2em max(5vw,16px) 2.5em;max-width:calc(1240px + 10vw);margin:0 au
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,15em),1fr));gap:.8em}
 .t{background:var(--tag);border:1px solid var(--line);border-radius:6px;padding:.9em 1em 1em;display:flex;gap:.8em;box-shadow:0 2px 0 var(--line)}
 .t.sale{border-top:.35em solid var(--red)}
-.bt{flex:0 0 auto;width:2.4em;height:6.4em;align-self:center}
+.pic{position:relative;flex:0 0 auto;width:4.4em;height:6.6em;align-self:center;display:grid;place-items:center}
+.bt{width:2.4em;height:6.4em}
+.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:var(--tag);border-radius:4px}
 .bd{flex:1;display:flex;flex-direction:column;gap:.35em}
 .k{display:flex;justify-content:space-between;gap:.5em;flex-wrap:wrap;font-size:.8125em;color:var(--mute)}
 .t h3{margin:0;font-size:1em;line-height:1.35;font-weight:700}
@@ -103,7 +105,7 @@ main{padding:1.2em max(5vw,16px) 2.5em;max-width:calc(1240px + 10vw);margin:0 au
 </div>
 <main>
   <div class="grid" id="grid"></div>
-  <p class="note">병 그림은 종류(레드·화이트·스파클링·디저트)를 구분하는 그림이고 실제 제품 사진이 아니에요. "사진 보기"를 누르면 해당 와인의 이미지 검색 결과가 열립니다.<br>
+  <p class="note">제품 사진은 코코홀릭 상품 사진을 불러온 것이고, 사진이 없는 와인은 종류별 병 그림으로 보여요. "사진 보기"를 누르면 해당 와인의 이미지 검색 결과가 열립니다.<br>
   가격과 행사 기간은 지점·재고에 따라 다를 수 있으니 매장 가격표나 코스트코 앱으로 한 번 더 확인하세요. 행사 종료일이 지난 상품은 자동으로 정상가로 바뀌어 표시됩니다.<br>
   자료: <a href="https://www.cocodalin.com/discount?category_id=11">코코달인 음료·주류 할인</a>, <a href="https://www.cocoholic.com/tags/%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8">코코홀릭 레드와인</a>, <a href="https://www.cocoholic.com/tags/%ED%99%94%EC%9D%B4%ED%8A%B8%EC%99%80%EC%9D%B8">코코홀릭 화이트와인</a>, <a href="https://www.cocoholic.com/tags/%EC%8A%A4%ED%8C%8C%ED%81%B4%EB%A7%81%EC%99%80%EC%9D%B8">코코홀릭 스파클링</a></p>
 </main>
@@ -121,7 +123,7 @@ const W=RAW.map(([n,t,reg,sale,st,en],i)=>{
   const price=on?sale:reg;
   const m=n.match(/(\d+(?:\.\d+)?)\s*(ML|L)$/i);const ml=m?parseFloat(m[1])*(m[2].toUpperCase()=="L"?1000:1):750;
   const name=n.replace(/\s*\d+(\.\d+)?\s*(ML|L)$/i,"");
-  return{i,n:name,vol:m?m[0]:"",t,reg,sale,en,left,on,price,pct:on?Math.round((reg-sale)/reg*100):0,per:Math.round(price/ml*750),
+  return{i,n:name,ph:(window.IMG||{})[n]||"",vol:m?m[0]:"",t,reg,sale,en,left,on,price,pct:on?Math.round((reg-sale)/reg*100):0,per:Math.round(price/ml*750),
     img:"https://www.google.com/search?tbm=isch&q="+encodeURIComponent("코스트코 "+name+" 와인")}
 });
 let view="sale",type="",sort="pct",q="",z=.8;
@@ -142,7 +144,7 @@ function draw(){
   const S={pct:(a,b)=>b.pct-a.pct||a.price-b.price,end:(a,b)=>(a.on?a.left:999)-(b.on?b.left:999)||b.pct-a.pct,low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price};
   L.sort(S[sort]);
   $("grid").innerHTML=L.length?L.map(w=>`<article class="t${w.on?" sale":""}">
-    <svg class="bt" viewBox="0 0 30 80" aria-hidden="true"><use href="#b-${w.t}"/></svg>
+    <div class="pic"><svg class="bt" viewBox="0 0 30 80" aria-hidden="true"><use href="#b-${w.t}"/></svg>${w.ph?`<img class="ph" src="${w.ph}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}</div>
     <div class="bd">
       <div class="k"><span>${TYPES[w.t]} · ${w.vol}</span>${w.on?`<span class="dd${w.left<=1?" hot":""}">${dd(w)}</span>`:""}</div>
       <h3>${w.n}</h3>
