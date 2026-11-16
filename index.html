@@ -169,7 +169,7 @@ function draw(){
 const setZ=v=>{z=Math.min(1,Math.max(.5,Math.round(v*10)/10));document.documentElement.style.setProperty("--z",z);$("zv").textContent=Math.round(z*100)+"%";try{localStorage.setItem("wineZ3",z)}catch(e){}};
 try{const s=parseFloat(localStorage.getItem("wineZ3"));if(s)setZ(s)}catch(e){}
 $("zm").onclick=()=>setZ(z-.1);$("zp").onclick=()=>setZ(z+.1);
-const setTab=v=>{view=v;$("tab-sale").setAttribute("aria-pressed",v==="sale");$("tab-all").setAttribute("aria-pressed",v==="all");draw()};
+const setTab=v=>{view=v;sort="low";$("sort").value="low";$("tab-sale").setAttribute("aria-pressed",v==="sale");$("tab-all").setAttribute("aria-pressed",v==="all");draw()};
 $("tab-sale").onclick=()=>setTab("sale");$("tab-all").onclick=()=>setTab("all");
 $("types").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;type=b.dataset.t;document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));draw()};
 $("sort").onchange=e=>{sort=e.target.value;draw()};
