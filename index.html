@@ -165,7 +165,7 @@ $("stats").innerHTML=[
   [W.length+"종","전체 와인"],
   [sales.length+"종","지금 할인 중"],
   [best?best.pct+"%":"-","최대 할인율"],
-  [soon+"종","내일까지 종료"]
+  [soon+"종","내일 종료"]
 ].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("");
 $("types").innerHTML=[["","전체"],...Object.entries(TYPES)].map(([k,v])=>`<button class="chip" data-t="${k}" aria-pressed="${k===""}">${v}</button>`).join("");
 const dd=w=>w.left===0?"오늘 종료":w.left===1?"내일 종료":`D-${w.left}`;
