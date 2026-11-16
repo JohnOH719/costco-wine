@@ -144,7 +144,7 @@ html[data-v=cart] .r2 select{visibility:hidden}
 </div>
 <main>
   <div class="grid" id="grid"></div>
-  <p class="note">제품 사진은 코코홀릭 상품 사진을 불러온 것이고, 사진이 없는 와인은 종류별 병 그림으로 보여요.<br>
+  <p class="note">병 그림은 와인 종류를 구분하는 그림이에요. "사진 보기"를 누르면 해당 와인의 이미지 검색 결과가 열립니다.<br>
   가격과 행사 기간은 지점·재고에 따라 다를 수 있으니 매장 가격표나 코스트코 앱으로 한 번 더 확인하세요. 행사 종료일이 지난 상품은 자동으로 정상가로 바뀌어 표시됩니다.<br>
   자료: <a href="https://www.cocodalin.com/discount?category_id=11">코코달인 음료·주류 할인</a>, <a href="https://www.cocoholic.com/tags/%EB%A0%88%EB%93%9C%EC%99%80%EC%9D%B8">코코홀릭 레드와인</a>, <a href="https://www.cocoholic.com/tags/%ED%99%94%EC%9D%B4%ED%8A%B8%EC%99%80%EC%9D%B8">코코홀릭 화이트와인</a>, <a href="https://www.cocoholic.com/tags/%EC%8A%A4%ED%8C%8C%ED%81%B4%EB%A7%81%EC%99%80%EC%9D%B8">코코홀릭 스파클링</a></p>
 </main>
@@ -165,7 +165,7 @@ const W=RAW.map(([n,t,reg,sale,st,en],i)=>{
   const price=on?sale:reg;
   const m=n.match(/(\d+(?:\.\d+)?)\s*(ML|L)$/i);const ml=m?parseFloat(m[1])*(m[2].toUpperCase()=="L"?1000:1):750;
   const name=n.replace(/\s*\d+(\.\d+)?\s*(ML|L)$/i,"");
-  return{i,full:n,n:name,ph:(window.IMG||{})[n]||"",vol:m?m[0]:"",t,reg,sale,en,left,on,price,pct:on?Math.round((reg-sale)/reg*100):0,per:Math.round(price/ml*750),
+  return{i,full:n,n:name,ph:"",vol:m?m[0]:"",t,reg,sale,en,left,on,price,pct:on?Math.round((reg-sale)/reg*100):0,per:Math.round(price/ml*750),
     img:"https://www.google.com/search?tbm=isch&q="+encodeURIComponent("코스트코 "+name+" 와인")}
 });
 let view="sale",type="",sort="low",q="",z=.8;
@@ -211,7 +211,7 @@ function cartItem(k){
   if(!w){st="gone";label="목록에서 사라짐";price=c.p}
   else if(w.on){st=c.s?"ok":"new";label=c.s?"할인 중":"새로 할인 시작";price=w.price}
   else{st=c.s?"end":"reg";label=c.s?"할인 끝남":"정상가";price=w.reg}
-  const t=w?w.t:c.t,n=w?w.n:c.n,vol=w?w.vol:c.v,ph=w?w.ph:c.ph;
+  const t=w?w.t:c.t,n=w?w.n:c.n,vol=w?w.vol:c.v,ph="";
   let note="";
   if(st==="end")note=`담을 때 할인가 ${won(c.s)} → 지금 정상가예요`;
   else if(st==="gone")note=`담을 때 ${won(c.p)} · 매장에 없을 수 있어요`;
@@ -231,7 +231,7 @@ function cartItem(k){
 }
 function drawCart(){
   const ks=Object.keys(cart);
-  if(!ks.length){$("grid").innerHTML=`<div class="empty">장바구니가 비어 있어요. 와인 사진의 장바구니 아이콘을 눌러 담아두세요.</div>`;return}
+  if(!ks.length){$("grid").innerHTML=`<div class="empty">장바구니가 비어 있어요. 와인 그림의 장바구니 아이콘을 눌러 담아두세요.</div>`;return}
   const it=ks.map(cartItem).filter(x=>(!type||x.t===type)&&(!q||x.n.toLowerCase().includes(q)));
   it.sort((a,b)=>a.rank-b.rank||a.price-b.price);
   const cnt=s=>ks.filter(k=>cartItem(k).html.includes("c-"+s)).length;
@@ -256,7 +256,7 @@ $("grid").onclick=e=>{
   const k=b.dataset.k?decodeURIComponent(b.dataset.k):"";
   if(b.classList.contains("ad")){
     if(cart[k])delete cart[k];
-    else{const w=byFull[k];cart[k]={n:w.n,v:w.vol,t:w.t,ph:w.ph,p:w.price,s:w.on?w.sale:0,d:window.UPDATED||""}}
+    else{const w=byFull[k];cart[k]={n:w.n,v:w.vol,t:w.t,p:w.price,s:w.on?w.sale:0,d:window.UPDATED||""}}
   }else if(b.classList.contains("bo"))cart[k].b=!cart[k].b;
   else if(b.classList.contains("rm"))delete cart[k];
   else if(b.id==="clrB")Object.keys(cart).forEach(x=>{if(cart[x].b)delete cart[x]});
