@@ -166,5 +166,6 @@ window.IMG={
 "라 스피네타 무스카토 다스티 산로꼬 750ML": "https://img.cocoholic.com/products/29087105-29e0-4d1a-8cbc-0476d53118ae.webp?w=640&q=75",
 "에밀리아나 유기농 스파클링 브륏 750ML": "https://img.cocoholic.com/products/1766549760005__________.webp?w=640&q=75",
 "산테로 피노 샤도네이 스푸만테 750ML": "https://img.cocoholic.com/products/1766546821487__________.webp?w=640&q=75",
-"페리에주에 그랑브뤼 샴페인 750ML": "https://image.cocodalin.com/product/sm/%ED%8E%98%EB%A6%AC%EC%97%90%EC%A3%BC%EC%97%90%20%EA%B7%B8%EB%9E%91%EB%B8%8C%EB%A4%BC%EC%83%B4%ED%8E%98%EC%9D%B8%20750ML.jpg"
+"페리에주에 그랑브뤼 샴페인 750ML": "https://image.cocodalin.com/product/sm/%ED%8E%98%EB%A6%AC%EC%97%90%EC%A3%BC%EC%97%90%20%EA%B7%B8%EB%9E%91%EB%B8%8C%EB%A4%BC%EC%83%B4%ED%8E%98%EC%9D%B8%20750ML.jpg",
+"빌라마리아 쇼비뇽 블랑 750ML": "https://www.costco.co.uk/medias/sys_master/images/h48/h90/400837780537374.jpg"
 };
