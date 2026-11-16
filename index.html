@@ -75,6 +75,8 @@ html[data-l=c] .t{align-items:stretch}
 html[data-l=c] .pic{width:42%;height:auto;min-height:12em;align-self:stretch}
 html[data-l=c] .bt{width:3.4em;height:9em}
 .ad{min-height:2.2em;margin-top:.4em;padding:0 .9em;border-radius:999px;border:1px solid var(--red);background:transparent;color:var(--red);font-weight:700;font-size:.875em;align-self:flex-start;cursor:pointer}
+.lc{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:.5em;align-self:center}
+.lc .ad{margin-top:0;align-self:stretch}
 .ad[aria-pressed=true]{background:var(--red);color:#fff}
 .fab{position:fixed;right:max(16px,4vw);bottom:calc(16px + env(safe-area-inset-bottom));z-index:9;min-height:3em;padding:0 1.2em;border-radius:999px;border:0;background:var(--red);color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
 .fab b{display:inline-block;min-width:1.6em;margin-left:.3em;padding:0 .4em;border-radius:999px;background:#fff;color:var(--red)}
@@ -179,14 +181,13 @@ const key=k=>encodeURIComponent(k);
 const SORT={pct:(a,b)=>b.pct-a.pct||a.price-b.price,end:(a,b)=>(a.on?a.left:999)-(b.on?b.left:999)||b.pct-a.pct,low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price};
 function card(w){
   const inC=!!cart[w.full];
-  return `<article class="t${w.on?" sale":""}">${pic(w.t,w.ph)}
+  return `<article class="t${w.on?" sale":""}"><div class="lc">${pic(w.t,w.ph)}<button class="ad" data-k="${key(w.full)}" aria-pressed="${inC}">${inC?"담음 ✓":"담기"}</button></div>
     <div class="bd">
       <div class="k"><span>${TYPES[w.t]} · ${w.vol}</span>${w.on?`<span class="dd${w.left<=1?" hot":""}">${dd(w)}</span>`:""}</div>
       <h3>${w.n}</h3>
       <div class="p"><b>${won(w.price)}</b>${w.on?`<s>${won(w.reg)}</s>`:""}</div>
       ${w.on?`<div class="off">−${won(w.reg-w.sale)} (${w.pct}%) · ~${w.en.slice(5).replace("-","/")}까지</div>`:""}
       ${w.vol!=="750ML"?`<div class="per">750ML 환산 ${won(w.per)}</div>`:""}
-      <button class="ad" data-k="${key(w.full)}" aria-pressed="${inC}">${inC?"담음 ✓":"장바구니 담기"}</button>
     </div>
   </article>`;
 }
@@ -216,7 +217,7 @@ function cartItem(k){
 }
 function drawCart(){
   const ks=Object.keys(cart);
-  if(!ks.length){$("grid").innerHTML=`<div class="empty">장바구니가 비어 있어요. 와인 카드의 "장바구니 담기"를 눌러 담아두세요.</div>`;return}
+  if(!ks.length){$("grid").innerHTML=`<div class="empty">장바구니가 비어 있어요. 와인 사진 아래 "담기"를 눌러 담아두세요.</div>`;return}
   const it=ks.map(cartItem).filter(x=>(!type||x.t===type)&&(!q||x.n.toLowerCase().includes(q)));
   it.sort((a,b)=>a.rank-b.rank||a.price-b.price);
   const cnt=s=>ks.filter(k=>cartItem(k).html.includes("c-"+s)).length;
