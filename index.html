@@ -100,7 +100,7 @@ html[data-l=c] .bt{width:3.4em;height:9em}
     <select id="sort" aria-label="정렬">
       <option value="pct">할인율순</option>
       <option value="end">종료임박</option>
-      <option value="low">낮은가격</option>
+      <option value="low" selected>낮은가격</option>
       <option value="high">높은가격</option>
     </select>
     <div class="zoom" role="group" aria-label="글자 크기">
@@ -138,7 +138,7 @@ const W=RAW.map(([n,t,reg,sale,st,en],i)=>{
   return{i,n:name,ph:(window.IMG||{})[n]||"",vol:m?m[0]:"",t,reg,sale,en,left,on,price,pct:on?Math.round((reg-sale)/reg*100):0,per:Math.round(price/ml*750),
     img:"https://www.google.com/search?tbm=isch&q="+encodeURIComponent("코스트코 "+name+" 와인")}
 });
-let view="sale",type="",sort="pct",q="",z=.8;
+let view="sale",type="",sort="low",q="",z=.8;
 const $=id=>document.getElementById(id);
 const U=(window.UPDATED||"").split("-");$("upd").textContent=U.length==3?`${+U[0]}년 ${+U[1]}월 ${+U[2]}일`:"";
 const sales=W.filter(w=>w.on);
