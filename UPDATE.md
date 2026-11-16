@@ -22,6 +22,7 @@ index.html은 화면이고, 와인 데이터는 wines.js에만 있습니다. 업
 
 - window.IMG에 없는 와인이 새로 들어오면, 코코홀릭 태그 페이지에서 그 와인의 상품 페이지(https://www.cocoholic.com/products/번호)를 찾아 주 사진 주소를 확인합니다.
 - 주소는 https://img.cocoholic.com/products/파일이름.webp?w=640&q=75 형태로 맞춰 window.IMG에 "와인 이름(용량 포함)": "주소"로 추가합니다. 이름은 WINES의 이름과 똑같아야 합니다.
+- 코코홀릭에 없으면 코코달인 할인 페이지(https://www.cocodalin.com/discount?category_id=11)의 상품 사진을 씁니다. 주소는 https://image.cocodalin.com/product/sm/상품이름.jpg 형태이고, 상품 이름 부분은 URL 인코딩합니다.
 - 사진을 못 찾으면 넣지 않습니다. 화면에서 종류별 병 그림이 대신 나옵니다.
 - 코코홀릭 페이지는 한 번에 여러 개를 열면 막히니, 몇 개씩 나눠서 엽니다.
 
