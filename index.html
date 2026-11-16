@@ -124,7 +124,7 @@ html[data-l=c] .bt{width:3.4em;height:9em}
 <script>
 {
 const RAW=window.WINES||[];
-const LQ=new URLSearchParams(location.search).get("l");if(/^[abc]$/.test(LQ||""))document.documentElement.dataset.l=LQ;
+const LQ=new URLSearchParams(location.search).get("l");document.documentElement.dataset.l=/^[abc]$/.test(LQ||"")?LQ:"a";
 const TYPES={R:"레드",W:"화이트",S:"스파클링",D:"디저트·기타"};
 const now=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Seoul"}));now.setHours(0,0,0,0);
 const day=s=>{const[y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
