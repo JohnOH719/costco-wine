@@ -81,8 +81,7 @@ html[data-l=c] .t{align-items:stretch}
 html[data-l=c] .pic{width:42%;height:auto;min-height:12em;align-self:stretch}
 html[data-l=c] .bt{width:3.4em;height:9em}
 .ad{min-height:2.2em;margin-top:.4em;padding:0 .9em;border-radius:999px;border:1px solid var(--red);background:transparent;color:var(--red);font-weight:700;font-size:.875em;align-self:flex-start;cursor:pointer}
-.lc{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:.5em;align-self:center}
-.lc .ad{margin-top:0;align-self:stretch}
+.pic .ad{position:absolute;right:-.1em;bottom:-.1em;z-index:2;width:2.5em;height:2.5em;min-height:0;margin:0;padding:0;border-radius:50%;display:grid;place-items:center;background:var(--tag);box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .ad[aria-pressed=true]{background:var(--red);color:#fff}
 .fab{position:fixed;right:max(16px,4vw);bottom:calc(16px + env(safe-area-inset-bottom));z-index:9;min-height:3em;padding:0 1.2em;border-radius:999px;border:0;background:var(--red);color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
 .fab b{display:inline-block;min-width:1.6em;margin-left:.3em;padding:0 .4em;border-radius:999px;background:#fff;color:var(--red)}
@@ -179,12 +178,13 @@ const dd=w=>w.left===0?"오늘 종료":w.left===1?"내일 종료":`D-${w.left}`;
 let cart={};try{cart=JSON.parse(localStorage.getItem("wineCart")||"{}")||{}}catch(e){cart={}}
 const saveCart=()=>{try{localStorage.setItem("wineCart",JSON.stringify(cart))}catch(e){}};
 const byFull={};W.forEach(w=>byFull[w.full]=w);
-const pic=(t,ph)=>`<div class="pic"><svg class="bt" viewBox="0 0 30 80" aria-hidden="true"><use href="#b-${t}"/></svg>${ph?`<img class="ph" src="${ph}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}</div>`;
+const pic=(t,ph,x="")=>`<div class="pic"><svg class="bt" viewBox="0 0 30 80" aria-hidden="true"><use href="#b-${t}"/></svg>${ph?`<img class="ph" src="${ph}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}${x}</div>`;
 const key=k=>encodeURIComponent(k);
+const CART=`<svg viewBox="0 0 24 24" width="1.25em" height="1.25em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 3.5h2.3l2.5 11.6a1.2 1.2 0 0 0 1.2.9h8.6a1.2 1.2 0 0 0 1.2-.9L20.5 7.5H6"/><circle cx="9.3" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg>`;
 const SORT={pct:(a,b)=>b.pct-a.pct||a.price-b.price,end:(a,b)=>(a.on?a.left:999)-(b.on?b.left:999)||b.pct-a.pct,low:(a,b)=>a.price-b.price,high:(a,b)=>b.price-a.price};
 function card(w){
   const inC=!!cart[w.full];
-  return `<article class="t${w.on?" sale":""}"><div class="lc">${pic(w.t,w.ph)}<button class="ad" data-k="${key(w.full)}" aria-pressed="${inC}">${inC?"담음 ✓":"담기"}</button></div>
+  return `<article class="t${w.on?" sale":""}">${pic(w.t,w.ph,`<button class="ad" data-k="${key(w.full)}" aria-pressed="${inC}" aria-label="${inC?"장바구니에서 빼기":"장바구니에 담기"}">${CART}</button>`)}
     <div class="bd">
       <div class="k"><span>${TYPES[w.t]} · ${w.vol}</span>${w.on?`<span class="dd${w.left<=1?" hot":""}">${dd(w)}</span>`:""}</div>
       <h3>${w.n}</h3>
@@ -220,7 +220,7 @@ function cartItem(k){
 }
 function drawCart(){
   const ks=Object.keys(cart);
-  if(!ks.length){$("grid").innerHTML=`<div class="empty">장바구니가 비어 있어요. 와인 사진 아래 "담기"를 눌러 담아두세요.</div>`;return}
+  if(!ks.length){$("grid").innerHTML=`<div class="empty">장바구니가 비어 있어요. 와인 사진의 장바구니 아이콘을 눌러 담아두세요.</div>`;return}
   const it=ks.map(cartItem).filter(x=>(!type||x.t===type)&&(!q||x.n.toLowerCase().includes(q)));
   it.sort((a,b)=>a.rank-b.rank||a.price-b.price);
   const cnt=s=>ks.filter(k=>cartItem(k).html.includes("c-"+s)).length;
