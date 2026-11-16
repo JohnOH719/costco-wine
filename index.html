@@ -25,7 +25,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font:calc(18px * var(--z))/1
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:.6em;flex-wrap:wrap}
 .top h1{margin:0}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4em;margin-top:.9em;max-width:40em}
-.stat{background:var(--wine2);border-radius:.6em;padding:.5em .6em}
+.stat{background:var(--wine2);border-radius:.6em;padding:.5em .6em;border:1px solid rgba(255,255,255,.22);color:#fff;font:inherit;text-align:left;cursor:pointer}
+.stat[aria-pressed=true]{background:#fff;color:var(--wine);border-color:#fff}
+.stat[aria-pressed=true] span{opacity:1}
+.r2{flex-wrap:nowrap}
+.r2 input{flex:1 1 6em}
+.r2 select{flex:0 0 auto;padding:0 .3em}
+.zb:disabled{opacity:.35;cursor:default}
 .stat b{display:block;font-size:1.25em;font-weight:900;line-height:1.2;white-space:nowrap}
 .stat span{font-size:.8em;opacity:.85}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:.7em max(5vw,16px)}
@@ -91,7 +97,7 @@ html[data-l=c] .bt{width:3.4em;height:9em}
 .cb .bo[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 .sum{grid-column:1/-1;background:var(--tag);border:1px solid var(--line);border-radius:6px;padding:.8em 1em;display:flex;flex-direction:column;gap:.3em}
 .sum b{font-size:1.25em}
-html[data-v=cart] .r1 select{visibility:hidden}
+html[data-v=cart] .r2 select{visibility:hidden}
 .empty{padding:2.5em;text-align:center;color:var(--mute)}
 .note{font-size:.8em;color:var(--mute);margin-top:1.8em;line-height:1.7}
 .note a{color:inherit}
@@ -113,9 +119,11 @@ html[data-v=cart] .r1 select{visibility:hidden}
   <div class="stats" id="stats"></div>
 </header>
 <div class="bar">
-  <div class="row r1" role="group" aria-label="보기">
-    <button class="tab" id="tab-sale" aria-pressed="true">할인 중</button>
-    <button class="tab" id="tab-all" aria-pressed="false">전체 와인</button>
+  <div class="row" role="group" aria-label="종류">
+    <span id="types" style="display:contents"></span>
+  </div>
+  <div class="row r2">
+    <input id="q" type="search" placeholder="와인 이름 검색" aria-label="와인 이름 검색">
     <select id="sort" aria-label="정렬">
       <option value="pct">할인율순</option>
       <option value="end">종료임박</option>
@@ -124,13 +132,8 @@ html[data-v=cart] .r1 select{visibility:hidden}
     </select>
     <div class="zoom" role="group" aria-label="글자 크기">
       <button class="zb" id="zm" aria-label="글자 작게">가−</button>
-      <span class="zv" id="zv">80%</span>
       <button class="zb" id="zp" aria-label="글자 크게">가+</button>
     </div>
-  </div>
-  <div class="row" role="group" aria-label="종류">
-    <span id="types" style="display:contents"></span>
-    <input id="q" type="search" placeholder="와인 이름 검색" aria-label="와인 이름 검색">
   </div>
 </div>
 <main>
@@ -170,8 +173,8 @@ $("stats").innerHTML=[
   [sales.length+"종","지금 할인 중"],
   [best?best.pct+"%":"-","최대 할인율"],
   [soon+"종","금주 종료"]
-].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("");
-$("types").innerHTML=[["","전체"],...Object.entries(TYPES)].map(([k,v])=>`<button class="chip" data-t="${k}" aria-pressed="${k===""}">${v}</button>`).join("");
+].map(([b,s],i)=>`<button class="stat" data-tile="${["all","sale","pct","week"][i]}" aria-pressed="${i===1}"><b>${b}</b><span>${s}</span></button>`).join("");
+$("types").innerHTML=[["","전체"],...Object.entries(TYPES)].map(([k,v])=>`<button class="chip" data-t="${k}" aria-pressed="${k===""}">${k==="D"?"디저트":v}</button>`).join("");
 const dd=w=>w.left===0?"오늘 종료":w.left===1?"내일 종료":`D-${w.left}`;
 let cart={};try{cart=JSON.parse(localStorage.getItem("wineCart")||"{}")||{}}catch(e){cart={}}
 const saveCart=()=>{try{localStorage.setItem("wineCart",JSON.stringify(cart))}catch(e){}};
@@ -232,7 +235,7 @@ function draw(){
   document.documentElement.dataset.v=view;
   $("fab").innerHTML=view==="cart"?"목록으로":`장바구니 <b id="cc">${Object.keys(cart).length}</b>`;
   if(view==="cart")return drawCart();
-  let L=(view==="sale"?sales:W).filter(w=>(!type||w.t===type)&&(!q||w.n.toLowerCase().includes(q)));
+  let L=(view==="sale"?sales:view==="week"?sales.filter(w=>w.left<=toSun):W).filter(w=>(!type||w.t===type)&&(!q||w.n.toLowerCase().includes(q)));
   L.sort(SORT[sort]);
   $("grid").innerHTML=L.length?L.map(card).join(""):`<div class="empty">조건에 맞는 와인이 없어요.</div>`;
 }
@@ -249,14 +252,15 @@ $("grid").onclick=e=>{
   else return;
   saveCart();draw();
 };
-$("fab").onclick=()=>{view=view==="cart"?"sale":"cart";$("tab-sale").setAttribute("aria-pressed",view==="sale");$("tab-all").setAttribute("aria-pressed",false);draw();scrollTo({top:0})};
-const setZ=v=>{z=Math.min(1,Math.max(.5,Math.round(v*10)/10));document.documentElement.style.setProperty("--z",z);$("zv").textContent=Math.round(z*100)+"%";try{localStorage.setItem("wineZ3",z)}catch(e){}};
+$("fab").onclick=()=>{if(view==="cart")setTile("sale");else{view="cart";markTile("");draw()}scrollTo({top:0})};
+const setZ=v=>{z=Math.min(1,Math.max(.5,Math.round(v*10)/10));document.documentElement.style.setProperty("--z",z);$("zm").disabled=z<=.5;$("zp").disabled=z>=1;try{localStorage.setItem("wineZ3",z)}catch(e){}};
 try{const s=parseFloat(localStorage.getItem("wineZ3"));if(s)setZ(s)}catch(e){}
 $("zm").onclick=()=>setZ(z-.1);$("zp").onclick=()=>setZ(z+.1);
-const setTab=v=>{view=v;sort="low";$("sort").value="low";$("tab-sale").setAttribute("aria-pressed",v==="sale");$("tab-all").setAttribute("aria-pressed",v==="all");draw()};
-$("tab-sale").onclick=()=>setTab("sale");$("tab-all").onclick=()=>setTab("all");
+const markTile=t=>document.querySelectorAll(".stat").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tile===t));
+const setTile=t=>{view=t==="all"?"all":t==="week"?"week":"sale";sort=t==="pct"?"pct":t==="week"?"end":"low";$("sort").value=sort;markTile(t);draw()};
+$("stats").onclick=e=>{const b=e.target.closest(".stat");if(b)setTile(b.dataset.tile)};
 $("types").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;type=b.dataset.t;document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));draw()};
-$("sort").onchange=e=>{sort=e.target.value;draw()};
+$("sort").onchange=e=>{sort=e.target.value;if(view==="sale")markTile(sort==="pct"?"pct":"sale");draw()};
 $("q").oninput=e=>{q=e.target.value.trim().toLowerCase();draw()};
 draw();
 }
