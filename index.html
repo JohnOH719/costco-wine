@@ -21,7 +21,9 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:calc(18px * var(--z))/1.55 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip}
 .hero{background:var(--wine);color:#fff;padding:1.2em max(5vw,16px) 1.2em}
 .hero h1{font-size:1.5em;line-height:1.2;margin:0 0 .2em;font-weight:900;text-wrap:balance}
-.hero p{margin:0;opacity:.85;font-size:.85em}
+.hero p{margin:0;opacity:.85;font-size:.85em;white-space:nowrap}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:.6em;flex-wrap:wrap}
+.top h1{margin:0}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4em;margin-top:.9em;max-width:40em}
 .stat{background:var(--wine2);border-radius:.6em;padding:.5em .6em}
 .stat b{display:block;font-size:1.25em;font-weight:900;line-height:1.2;white-space:nowrap}
@@ -105,8 +107,7 @@ html[data-v=cart] .r1 select{visibility:hidden}
   </defs>
 </svg>
 <header class="hero">
-  <h1>코스트코 와인 할인</h1>
-  <p><span id="upd"></span> 업데이트</p>
+  <div class="top"><h1>코스트코 와인 할인</h1><p><span id="upd"></span> 업데이트</p></div>
   <div class="stats" id="stats"></div>
 </header>
 <div class="bar">
@@ -157,7 +158,7 @@ const W=RAW.map(([n,t,reg,sale,st,en],i)=>{
 });
 let view="sale",type="",sort="low",q="",z=.8;
 const $=id=>document.getElementById(id);
-const U=(window.UPDATED||"").split("-");$("upd").textContent=U.length==3?`${+U[0]}년 ${+U[1]}월 ${+U[2]}일`:"";
+const U=(window.UPDATED||"").split("-");$("upd").textContent=U.length==3?`${+U[1]}/${+U[2]}`:"";
 const sales=W.filter(w=>w.on);
 const best=sales.slice().sort((a,b)=>b.pct-a.pct)[0];
 const toSun=(7-now.getDay())%7;
